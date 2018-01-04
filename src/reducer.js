@@ -1,3 +1,5 @@
+import { combineReducers } from 'redux';
+
 const counter = (state=0, action) => {
     switch (action.type) {
         case 'INCREMENT':
@@ -80,11 +82,9 @@ const visibilityFilter = (state='SHOW_ALL', action) => {
     }
 };
 
-const todoApp = (state={}, action) => {
-    return {
-        todos: todos(state, action),
-        visibilityFilter: visibilityFilter(state, action)
-    }
-};
+const todoApp = combineReducers({
+    todos, 
+    visibilityFilter
+});
 
 export { counter, addCounter, removeCounter, incrementCounter, todos, todoApp };
