@@ -2,6 +2,7 @@ import test from 'ava';
 import { counter } from './reducer';
 import { addCounter, removeCounter, incrementCounter } from './reducer';
 import { toggleTodo } from './reducer';
+import { todo } from './reducer';
 
 test('Test Increment', t => {
     t.is(counter(0, {type: 'INCREMENT'}), 1)
@@ -53,4 +54,23 @@ test('Test Toggle Todo', t => {
         completed: true
     };
     t.deepEqual(toggleTodo(objectBefore), objectAfter);
+});
+
+test('Test Add Todo', t => {
+    let action = {
+        type: 'ADD_TODO',
+        id: 0,
+        text: 'Example'
+    };
+
+    let arrayBefore = [];
+    let arrayAfter = [
+        {
+            id: 0,
+            text: 'Example',
+            completed: false
+        }
+    ];
+
+    t.deepEqual(todo(arrayBefore, action), arrayAfter);
 });
