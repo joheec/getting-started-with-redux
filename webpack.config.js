@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/001-counter-reducer.js',
+    entry: './src/component.js',
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: '001-counter-reducer.js'
