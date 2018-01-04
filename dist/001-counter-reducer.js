@@ -1499,7 +1499,14 @@ var TodoApp = function (_Component) {
                     this.props.todos.map(function (todo) {
                         return _react2.default.createElement(
                             'li',
-                            { key: todo.id },
+                            {
+                                key: todo.id,
+                                onClick: function onClick() {
+                                    return _this2.props.toggleTodo(todo.id);
+                                },
+                                style: {
+                                    textDecoration: todo.completed ? 'line-through' : 'none'
+                                } },
                             todo.text
                         );
                     })
@@ -1534,7 +1541,13 @@ var render = function render() {
                     id: nextTodoId++
                 });
             },
-            todos: todoAppStore.getState().todos
+            todos: todoAppStore.getState().todos,
+            toggleTodo: function toggleTodo(id) {
+                return todoAppStore.dispatch({
+                    type: 'TOGGLE_TODO',
+                    id: id
+                });
+            }
         })
     ), app);
 };

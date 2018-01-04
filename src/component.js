@@ -24,7 +24,17 @@ class TodoApp extends Component {
                     Add Todo
                 </button>
                 <ul>
-                    { this.props.todos.map(todo => <li key={ todo.id }>{ todo.text }</li>) }
+                    { this.props.todos.map(todo => <li 
+                        key={ todo.id }
+                        onClick={ () => this.props.toggleTodo(todo.id) }
+                        style={{
+                            textDecoration:
+                                todo.completed ? 
+                                    'line-through':
+                                    'none'
+                        }}>
+                            { todo.text }
+                    </li>) }
                 </ul>
             </div>
         );
@@ -48,6 +58,10 @@ const render = () => {
                     id: nextTodoId++
                 })}
                 todos={ todoAppStore.getState().todos }
+                toggleTodo={ id => todoAppStore.dispatch({
+                    type: 'TOGGLE_TODO',
+                    id
+                })}
             />
         </div>,
         app
