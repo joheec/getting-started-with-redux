@@ -2057,6 +2057,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var counter = function counter() {
@@ -2085,10 +2087,54 @@ var incrementCounter = function incrementCounter(list, index) {
     return [].concat(_toConsumableArray(list.slice(0, index)), [list[index] + 1], _toConsumableArray(list.slice(index + 1)));
 };
 
+var toggleTodo = function toggleTodo(todo) {
+    return _extends({}, todo, {
+        completed: !todo.complete
+    });
+};
+
+var todo = function todo() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var action = arguments[1];
+
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                id: action.id,
+                text: action.text,
+                completed: false
+            };
+        case 'TOGGLE_TODO':
+            if (action.id !== state.id) {
+                return state;
+            }
+            return _extends({}, state, {
+                completed: !state.completed
+            });
+    }
+};
+
+var todos = function todos() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [].concat(_toConsumableArray(state), [todo(undefined, action)]);
+        case 'TOGGLE_TODO':
+            return state.map(function (t) {
+                return todo(t, action);
+            });
+        default:
+            return state;
+    }
+};
+
 exports.counter = counter;
 exports.addCounter = addCounter;
 exports.removeCounter = removeCounter;
 exports.incrementCounter = incrementCounter;
+exports.todos = todos;
 
 /***/ }),
 /* 38 */

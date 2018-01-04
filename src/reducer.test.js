@@ -1,7 +1,7 @@
 import test from 'ava';
 import { counter } from './reducer';
 import { addCounter, removeCounter, incrementCounter } from './reducer';
-import { todo } from './reducer';
+import { todos } from './reducer';
 
 test('Test Increment', t => {
     t.is(counter(0, {type: 'INCREMENT'}), 1)
@@ -56,7 +56,7 @@ test('Test Add Todo', t => {
         }
     ];
 
-    t.deepEqual(todo(arrayBefore, action), arrayAfter);
+    t.deepEqual(todos(arrayBefore, action), arrayAfter);
 });
 
 test('Test Toggle Todo', t => {
@@ -91,5 +91,5 @@ test('Test Toggle Todo', t => {
         }
     ];
 
-    t.deepEqual(todo(arrayBefore, action), arrayAfter);
+    t.deepEqual(todos(arrayBefore, action), arrayAfter);
 });
