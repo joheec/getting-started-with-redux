@@ -31,4 +31,11 @@ const incrementCounter = (list, index) => (
     ]
 );
 
-export { counter, addCounter, removeCounter, incrementCounter };
+const toggleTodo = todo => (
+    {
+        ...todo,
+        completed: !todo.complete
+    }
+);
+
+export { counter, addCounter, removeCounter, incrementCounter, toggleTodo };
