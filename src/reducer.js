@@ -78,7 +78,7 @@ const visibilityFilter = (state='SHOW_ALL', action) => {
         case 'SET_VISIBILITY':
             return action.visibility;
         default:
-            state;
+            return state;
     }
 };
 

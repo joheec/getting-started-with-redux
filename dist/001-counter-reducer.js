@@ -1416,6 +1416,8 @@ module.exports = focusNode;
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _redux = __webpack_require__(7);
 
 var _reducer = __webpack_require__(37);
@@ -1429,6 +1431,12 @@ var _react = __webpack_require__(4);
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Counter = function Counter(_ref) {
     var count = _ref.count,
@@ -1455,22 +1463,86 @@ var Counter = function Counter(_ref) {
     );
 };
 
+var nextTodoId = -1;
+
+var TodoApp = function (_Component) {
+    _inherits(TodoApp, _Component);
+
+    function TodoApp() {
+        _classCallCheck(this, TodoApp);
+
+        return _possibleConstructorReturn(this, (TodoApp.__proto__ || Object.getPrototypeOf(TodoApp)).apply(this, arguments));
+    }
+
+    _createClass(TodoApp, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { ref: function ref(node) {
+                        _this2.input = node;
+                    } }),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: function onClick() {
+                            _this2.props.addTodo(_this2.input.value);
+                            _this2.input.value = '';
+                        } },
+                    'Add Todo'
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    null,
+                    this.props.todos.map(function (todo) {
+                        return _react2.default.createElement(
+                            'li',
+                            { key: todo.id },
+                            todo.text
+                        );
+                    })
+                )
+            );
+        }
+    }]);
+
+    return TodoApp;
+}(_react.Component);
+
 var app = document.getElementById('root');
 
 var render = function render() {
-    _reactDom2.default.render(_react2.default.createElement(Counter, {
-        count: store.getState(),
-        increment: function increment() {
-            store.dispatch({ type: 'INCREMENT' });
-        },
-        decrement: function decrement() {
-            store.dispatch({ type: 'DECREMENT' });
-        }
-    }), app);
+    _reactDom2.default.render(_react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(Counter, {
+            count: counterStore.getState(),
+            increment: function increment() {
+                counterStore.dispatch({ type: 'INCREMENT' });
+            },
+            decrement: function decrement() {
+                counterStore.dispatch({ type: 'DECREMENT' });
+            }
+        }),
+        _react2.default.createElement(TodoApp, {
+            addTodo: function addTodo(text) {
+                return todoAppStore.dispatch({
+                    type: 'ADD_TODO',
+                    text: text,
+                    id: nextTodoId++
+                });
+            },
+            todos: todoAppStore.getState().todos
+        })
+    ), app);
 };
 
-var store = (0, _redux.createStore)(_reducer.counter);
-store.subscribe(render);
+var counterStore = (0, _redux.createStore)(_reducer.counter);
+var todoAppStore = (0, _redux.createStore)(_reducer.todoApp);
+counterStore.subscribe(render);
+todoAppStore.subscribe(render);
 render();
 
 /***/ }),
@@ -2141,7 +2213,7 @@ var visibilityFilter = function visibilityFilter() {
         case 'SET_VISIBILITY':
             return action.visibility;
         default:
-            state;
+            return state;
     }
 };
 

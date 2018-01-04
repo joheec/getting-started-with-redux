@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
-import { counter } from './reducer';
+import { counter, todoApp } from './reducer';
 import ReactDom from 'react-dom';
-import React from 'react';
+import React, { Component } from 'react';
 
 const Counter = ({ count, increment, decrement }) => (
     <div>
@@ -11,19 +11,51 @@ const Counter = ({ count, increment, decrement }) => (
     </div>
 );
 
+let nextTodoId = -1;
+class TodoApp extends Component {
+    render() {
+        return (
+            <div>
+                <input ref={ node => { this.input = node; }}/>
+                <button onClick={ () => { 
+                    this.props.addTodo(this.input.value);
+                    this.input.value = '';
+                }}>
+                    Add Todo
+                </button>
+                <ul>
+                    { this.props.todos.map(todo => <li key={ todo.id }>{ todo.text }</li>) }
+                </ul>
+            </div>
+        );
+    }
+}
+
 const app = document.getElementById('root');
 
 const render = () => {
     ReactDom.render(
-        <Counter 
-            count={ store.getState() }
-            increment={ () => { store.dispatch({type: 'INCREMENT'}); } }
-            decrement={ () => { store.dispatch({type: 'DECREMENT'}); } }
-        />,
+        <div>
+            <Counter 
+                count={ counterStore.getState() }
+                increment={ () => { counterStore.dispatch({type: 'INCREMENT'}); } }
+                decrement={ () => { counterStore.dispatch({type: 'DECREMENT'}); } }
+            />
+            <TodoApp 
+                addTodo={ text => todoAppStore.dispatch({
+                    type: 'ADD_TODO',
+                    text,
+                    id: nextTodoId++
+                })}
+                todos={ todoAppStore.getState().todos }
+            />
+        </div>,
         app
     );
 };
 
-const store = createStore(counter);
-store.subscribe(render);
+const counterStore = createStore(counter);
+const todoAppStore = createStore(todoApp);
+counterStore.subscribe(render);
+todoAppStore.subscribe(render);
 render();
