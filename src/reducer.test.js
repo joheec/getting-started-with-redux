@@ -1,7 +1,6 @@
 import test from 'ava';
 import { counter } from './reducer';
 import { addCounter, removeCounter, incrementCounter } from './reducer';
-import { toggleTodo } from './reducer';
 import { todo } from './reducer';
 
 test('Test Increment', t => {
@@ -41,21 +40,6 @@ test('Test Increment Counter', t => {
     t.deepEqual(incrementCounter(listBefore, 1), listAfter);
 });
 
-test('Test Toggle Todo', t => {
-    let objectBefore = {
-        id: 0,
-        text: 'Example',
-        completed: false
-    };
-
-    let objectAfter = {
-        id: 0,
-        text: 'Example',
-        completed: true
-    };
-    t.deepEqual(toggleTodo(objectBefore), objectAfter);
-});
-
 test('Test Add Todo', t => {
     let action = {
         type: 'ADD_TODO',
@@ -69,6 +53,41 @@ test('Test Add Todo', t => {
             id: 0,
             text: 'Example',
             completed: false
+        }
+    ];
+
+    t.deepEqual(todo(arrayBefore, action), arrayAfter);
+});
+
+test('Test Toggle Todo', t => {
+    let action = {
+        type: 'TOGGLE_TODO',
+        id: 1
+    };
+
+    let arrayBefore = [
+        {
+            id: 0,
+            text: 'Learn redux',
+            completed: false
+        },
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: false
+        }
+    ];
+
+    let arrayAfter = [
+        {
+            id: 0,
+            text: 'Learn redux',
+            completed: false
+        },
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: true
         }
     ];
 

@@ -48,8 +48,20 @@ const todo = (state=[], action) => {
                     text: action.text,
                     completed: false
                 }
-            ]
+            ];
+        case 'TOGGLE_TODO':
+            return state.map(todo => {
+                if (todo.id !== action.id) {
+                    return todo;
+                }
+                return {
+                    ...todo,
+                    completed: !todo.completed
+                };
+            });
+        default:
+            return state;
     }
 };
 
-export { counter, addCounter, removeCounter, incrementCounter, toggleTodo, todo };
+export { counter, addCounter, removeCounter, incrementCounter, todo };
