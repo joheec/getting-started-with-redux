@@ -71,4 +71,20 @@ const todos = (state=[], action) => {
     }
 };
 
-export { counter, addCounter, removeCounter, incrementCounter, todos };
+const visibilityFilter = (state='SHOW_ALL', action) => {
+    switch (action.type) {
+        case 'SET_VISIBILITY':
+            return action.visibility;
+        default:
+            state;
+    }
+};
+
+const todoApp = (state={}, action) => {
+    return {
+        todos: todos(state, action),
+        visibilityFilter: visibilityFilter(state, action)
+    }
+};
+
+export { counter, addCounter, removeCounter, incrementCounter, todos, todoApp };
