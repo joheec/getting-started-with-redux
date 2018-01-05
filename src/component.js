@@ -41,6 +41,29 @@ const getVisibleTodos = (todos, filter) => {
     }
 };
 
+const Todo = ({ onClick, id, completed, text}) => (
+    <li 
+        onClick={onClick}
+        style={{
+            textDecoration:
+                completed ? 
+                    'line-through':
+                    'none'
+        }}>
+            { text }
+    </li> 
+);
+
+const TodoList = ({ onTodoClick, todos }) => (
+    <ul>
+        { todos.map( todo => <Todo 
+            key={todo.id}
+            onClick={() => onTodoClick(todo.id)}
+            {...todo}
+        />) }
+    </ul>
+);
+
 let nextTodoId = -1;
 class TodoApp extends Component {
     render() {
@@ -82,24 +105,15 @@ class TodoApp extends Component {
                         Completed
                     </FilterLink>
                 </p>
-                <ul>
-                    { visibleTodos.map(todo => <li 
-                        key={ todo.id }
-                        onClick={ () => {
-                            todoAppStore.dispatch({
-                                type: 'TOGGLE_TODO',
-                                id: todo.id
-                            })
-                        }}
-                        style={{
-                            textDecoration:
-                                todo.completed ? 
-                                    'line-through':
-                                    'none'
-                        }}>
-                            { todo.text }
-                    </li>) }
-                </ul>
+                <TodoList 
+                    todos={visibleTodos} 
+                    onTodoClick= { id => {
+                        todoAppStore.dispatch({
+                            type: 'TOGGLE_TODO',
+                            id
+                        });
+                    }}
+                />
             </div>
         );
     }

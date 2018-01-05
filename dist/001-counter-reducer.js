@@ -1418,6 +1418,8 @@ module.exports = focusNode;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _redux = __webpack_require__(7);
 
 var _reducer = __webpack_require__(37);
@@ -1509,6 +1511,39 @@ var getVisibleTodos = function getVisibleTodos(todos, filter) {
     }
 };
 
+var Todo = function Todo(_ref3) {
+    var onClick = _ref3.onClick,
+        id = _ref3.id,
+        completed = _ref3.completed,
+        text = _ref3.text;
+    return _react2.default.createElement(
+        'li',
+        {
+            onClick: onClick,
+            style: {
+                textDecoration: completed ? 'line-through' : 'none'
+            } },
+        text
+    );
+};
+
+var TodoList = function TodoList(_ref4) {
+    var onTodoClick = _ref4.onTodoClick,
+        todos = _ref4.todos;
+    return _react2.default.createElement(
+        'ul',
+        null,
+        todos.map(function (todo) {
+            return _react2.default.createElement(Todo, _extends({
+                key: todo.id,
+                onClick: function onClick() {
+                    return onTodoClick(todo.id);
+                }
+            }, todo));
+        })
+    );
+};
+
 var nextTodoId = -1;
 
 var TodoApp = function (_Component) {
@@ -1580,27 +1615,15 @@ var TodoApp = function (_Component) {
                         'Completed'
                     )
                 ),
-                _react2.default.createElement(
-                    'ul',
-                    null,
-                    visibleTodos.map(function (todo) {
-                        return _react2.default.createElement(
-                            'li',
-                            {
-                                key: todo.id,
-                                onClick: function onClick() {
-                                    todoAppStore.dispatch({
-                                        type: 'TOGGLE_TODO',
-                                        id: todo.id
-                                    });
-                                },
-                                style: {
-                                    textDecoration: todo.completed ? 'line-through' : 'none'
-                                } },
-                            todo.text
-                        );
-                    })
-                )
+                _react2.default.createElement(TodoList, {
+                    todos: visibleTodos,
+                    onTodoClick: function onTodoClick(id) {
+                        todoAppStore.dispatch({
+                            type: 'TOGGLE_TODO',
+                            id: id
+                        });
+                    }
+                })
             );
         }
     }]);
