@@ -1418,6 +1418,8 @@ module.exports = focusNode;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _redux = __webpack_require__(7);
 
 var _reducer = __webpack_require__(37);
@@ -1432,61 +1434,70 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Counter = function Counter(_ref) {
-    var count = _ref.count,
-        increment = _ref.increment,
-        decrement = _ref.decrement;
-    return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-            'h1',
-            null,
-            count
-        ),
-        _react2.default.createElement(
-            'button',
-            { onClick: function onClick() {
-                    counterStore.dispatch({ type: 'INCREMENT' });
-                } },
-            '+'
-        ),
-        _react2.default.createElement(
-            'button',
-            { onClick: function onClick() {
-                    counterStore.dispatch({ type: 'DECREMENT' });
-                } },
-            '-'
-        )
-    );
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var FilterLink = function FilterLink(_ref2) {
-    var filter = _ref2.filter,
-        currentFilter = _ref2.currentFilter,
-        children = _ref2.children;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-    if (currentFilter === filter) {
-        return _react2.default.createElement(
-            'span',
-            null,
-            children
-        );
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var counterStore = (0, _redux.createStore)(_reducer.counter);
+var todoAppStore = (0, _redux.createStore)(_reducer.todoApp);
+
+var Counter = function (_Component) {
+    _inherits(Counter, _Component);
+
+    function Counter() {
+        _classCallCheck(this, Counter);
+
+        return _possibleConstructorReturn(this, (Counter.__proto__ || Object.getPrototypeOf(Counter)).apply(this, arguments));
     }
-    return _react2.default.createElement(
-        'a',
-        { href: '#',
-            onClick: function onClick(e) {
-                e.preventDefault();
-                todoAppStore.dispatch({
-                    type: 'SET_VISIBILITY',
-                    filter: filter
-                });
-            }
-        },
-        children
-    );
-};
+
+    _createClass(Counter, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            this.unsubscribe = counterStore.subscribe(function () {
+                return _this2.forceUpdate();
+            });
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.unsubscribe();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var state = counterStore.getState();
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    state
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: function onClick() {
+                            counterStore.dispatch({ type: 'INCREMENT' });
+                        } },
+                    '+'
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: function onClick() {
+                            counterStore.dispatch({ type: 'DECREMENT' });
+                        } },
+                    '-'
+                )
+            );
+        }
+    }]);
+
+    return Counter;
+}(_react.Component);
 
 var getVisibleTodos = function getVisibleTodos(todos, filter) {
     switch (filter) {
@@ -1503,11 +1514,11 @@ var getVisibleTodos = function getVisibleTodos(todos, filter) {
     }
 };
 
-var Todo = function Todo(_ref3) {
-    var onClick = _ref3.onClick,
-        id = _ref3.id,
-        completed = _ref3.completed,
-        text = _ref3.text;
+var Todo = function Todo(_ref) {
+    var onClick = _ref.onClick,
+        id = _ref.id,
+        completed = _ref.completed,
+        text = _ref.text;
     return _react2.default.createElement(
         'li',
         {
@@ -1519,9 +1530,9 @@ var Todo = function Todo(_ref3) {
     );
 };
 
-var TodoList = function TodoList(_ref4) {
-    var onTodoClick = _ref4.onTodoClick,
-        todos = _ref4.todos;
+var TodoList = function TodoList(_ref2) {
+    var onTodoClick = _ref2.onTodoClick,
+        todos = _ref2.todos;
     return _react2.default.createElement(
         'ul',
         null,
@@ -1536,8 +1547,8 @@ var TodoList = function TodoList(_ref4) {
     );
 };
 
-var AddTodo = function AddTodo(_ref5) {
-    var onAddTodo = _ref5.onAddTodo;
+var AddTodo = function AddTodo(_ref3) {
+    var onAddTodo = _ref3.onAddTodo;
 
     var input = void 0;
     return _react2.default.createElement(
@@ -1557,8 +1568,66 @@ var AddTodo = function AddTodo(_ref5) {
     );
 };
 
-var Filters = function Filters(_ref6) {
-    var visibilityFilter = _ref6.visibilityFilter;
+var Link = function Link(_ref4) {
+    var _onClick = _ref4.onClick,
+        children = _ref4.children,
+        active = _ref4.active;
+
+    if (active) {
+        return _react2.default.createElement(
+            'span',
+            null,
+            children
+        );
+    }
+    return _react2.default.createElement(
+        'a',
+        { href: '#', onClick: function onClick(e) {
+                e.preventDefault();
+                _onClick();
+            } },
+        children
+    );
+};
+
+var FilterLink = function (_Component2) {
+    _inherits(FilterLink, _Component2);
+
+    function FilterLink() {
+        _classCallCheck(this, FilterLink);
+
+        return _possibleConstructorReturn(this, (FilterLink.__proto__ || Object.getPrototypeOf(FilterLink)).apply(this, arguments));
+    }
+
+    _createClass(FilterLink, [{
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                filter = _props.filter,
+                children = _props.children;
+
+            var _todoAppStore$getStat = todoAppStore.getState(),
+                visibilityFilter = _todoAppStore$getStat.visibilityFilter;
+
+            return _react2.default.createElement(Link, {
+                onClick: function onClick() {
+                    todoAppStore.dispatch({
+                        type: 'SET_VISIBILITY',
+                        filter: filter
+                    });
+                },
+                children: children,
+                active: filter === visibilityFilter
+            });
+        }
+    }]);
+
+    return FilterLink;
+}(_react.Component);
+
+;
+
+var Filters = function Filters() {
     return _react2.default.createElement(
         'p',
         null,
@@ -1566,76 +1635,91 @@ var Filters = function Filters(_ref6) {
         ' ',
         _react2.default.createElement(
             FilterLink,
-            {
-                filter: 'SHOW_ALL',
-                currentFilter: visibilityFilter
-            },
+            { filter: 'SHOW_ALL' },
             'All'
         ),
         ' ',
         _react2.default.createElement(
             FilterLink,
-            {
-                filter: 'SHOW_ACTIVE',
-                currentFilter: visibilityFilter
-            },
+            { filter: 'SHOW_ACTIVE' },
             'Active'
         ),
         ' ',
         _react2.default.createElement(
             FilterLink,
-            {
-                filter: 'SHOW_COMPLETED',
-                currentFilter: visibilityFilter
-            },
+            { filter: 'SHOW_COMPLETED' },
             'Completed'
         )
     );
 };
 
 var nextTodoId = -1;
-var TodoApp = function TodoApp(_ref7) {
-    var todos = _ref7.todos,
-        visibilityFilter = _ref7.visibilityFilter;
-    return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(AddTodo, { onAddTodo: function onAddTodo(input) {
-                todoAppStore.dispatch({
-                    type: 'ADD_TODO',
-                    text: input,
-                    id: nextTodoId++
-                });
-            } }),
-        _react2.default.createElement(Filters, { visibilityFilter: visibilityFilter }),
-        _react2.default.createElement(TodoList, {
-            todos: getVisibleTodos(todos, visibilityFilter),
-            onTodoClick: function onTodoClick(id) {
-                todoAppStore.dispatch({
-                    type: 'TOGGLE_TODO',
-                    id: id
-                });
-            }
-        })
-    );
-};
+
+var TodoApp = function (_Component3) {
+    _inherits(TodoApp, _Component3);
+
+    function TodoApp() {
+        _classCallCheck(this, TodoApp);
+
+        return _possibleConstructorReturn(this, (TodoApp.__proto__ || Object.getPrototypeOf(TodoApp)).apply(this, arguments));
+    }
+
+    _createClass(TodoApp, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this5 = this;
+
+            this.unsubscribe = todoAppStore.subscribe(function () {
+                return _this5.forceUpdate();
+            });
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.unsubscribe();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _todoAppStore$getStat2 = todoAppStore.getState(),
+                todos = _todoAppStore$getStat2.todos,
+                visibilityFilter = _todoAppStore$getStat2.visibilityFilter;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(AddTodo, { onAddTodo: function onAddTodo(input) {
+                        todoAppStore.dispatch({
+                            type: 'ADD_TODO',
+                            text: input,
+                            id: nextTodoId++
+                        });
+                    } }),
+                _react2.default.createElement(Filters, null),
+                _react2.default.createElement(TodoList, {
+                    todos: getVisibleTodos(todos, visibilityFilter),
+                    onTodoClick: function onTodoClick(id) {
+                        todoAppStore.dispatch({
+                            type: 'TOGGLE_TODO',
+                            id: id
+                        });
+                    }
+                })
+            );
+        }
+    }]);
+
+    return TodoApp;
+}(_react.Component);
 
 var app = document.getElementById('root');
 
-var render = function render() {
-    _reactDom2.default.render(_react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(Counter, { count: counterStore.getState() }),
-        _react2.default.createElement(TodoApp, todoAppStore.getState())
-    ), app);
-};
-
-var counterStore = (0, _redux.createStore)(_reducer.counter);
-var todoAppStore = (0, _redux.createStore)(_reducer.todoApp);
-counterStore.subscribe(render);
-todoAppStore.subscribe(render);
-render();
+_reactDom2.default.render(_react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(Counter, null),
+    _react2.default.createElement(TodoApp, null)
+), app);
 
 /***/ }),
 /* 22 */
