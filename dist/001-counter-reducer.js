@@ -1452,12 +1452,16 @@ var Counter = function Counter(_ref) {
         ),
         _react2.default.createElement(
             'button',
-            { onClick: increment },
+            { onClick: function onClick() {
+                    counterStore.dispatch({ type: 'INCREMENT' });
+                } },
             '+'
         ),
         _react2.default.createElement(
             'button',
-            { onClick: decrement },
+            { onClick: function onClick() {
+                    counterStore.dispatch({ type: 'DECREMENT' });
+                } },
             '-'
         )
     );
@@ -1488,7 +1492,11 @@ var TodoApp = function (_Component) {
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
-                            _this2.props.addTodo(_this2.input.value);
+                            todoAppStore.dispatch({
+                                type: 'ADD_TODO',
+                                text: _this2.input.value,
+                                id: nextTodoId++
+                            });
                             _this2.input.value = '';
                         } },
                     'Add Todo'
@@ -1502,7 +1510,10 @@ var TodoApp = function (_Component) {
                             {
                                 key: todo.id,
                                 onClick: function onClick() {
-                                    return _this2.props.toggleTodo(todo.id);
+                                    todoAppStore.dispatch({
+                                        type: 'TOGGLE_TODO',
+                                        id: todo.id
+                                    });
                                 },
                                 style: {
                                     textDecoration: todo.completed ? 'line-through' : 'none'
@@ -1524,31 +1535,8 @@ var render = function render() {
     _reactDom2.default.render(_react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(Counter, {
-            count: counterStore.getState(),
-            increment: function increment() {
-                counterStore.dispatch({ type: 'INCREMENT' });
-            },
-            decrement: function decrement() {
-                counterStore.dispatch({ type: 'DECREMENT' });
-            }
-        }),
-        _react2.default.createElement(TodoApp, {
-            addTodo: function addTodo(text) {
-                return todoAppStore.dispatch({
-                    type: 'ADD_TODO',
-                    text: text,
-                    id: nextTodoId++
-                });
-            },
-            todos: todoAppStore.getState().todos,
-            toggleTodo: function toggleTodo(id) {
-                return todoAppStore.dispatch({
-                    type: 'TOGGLE_TODO',
-                    id: id
-                });
-            }
-        })
+        _react2.default.createElement(Counter, { count: counterStore.getState() }),
+        _react2.default.createElement(TodoApp, { todos: todoAppStore.getState().todos })
     ), app);
 };
 

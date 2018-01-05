@@ -6,8 +6,8 @@ import React, { Component } from 'react';
 const Counter = ({ count, increment, decrement }) => (
     <div>
         <h1>{ count }</h1>
-        <button onClick={ increment }>+</button>
-        <button onClick={ decrement }>-</button>
+        <button onClick={ () => { counterStore.dispatch({type: 'INCREMENT'}); }}>+</button>
+        <button onClick={ () => { counterStore.dispatch({type: 'DECREMENT'}); }}>-</button>
     </div>
 );
 
@@ -18,7 +18,11 @@ class TodoApp extends Component {
             <div>
                 <input ref={ node => { this.input = node; }}/>
                 <button onClick={ () => { 
-                    this.props.addTodo(this.input.value);
+                    todoAppStore.dispatch({
+                        type: 'ADD_TODO',
+                        text: this.input.value,
+                        id: nextTodoId++
+                    })
                     this.input.value = '';
                 }}>
                     Add Todo
@@ -26,7 +30,12 @@ class TodoApp extends Component {
                 <ul>
                     { this.props.todos.map(todo => <li 
                         key={ todo.id }
-                        onClick={ () => this.props.toggleTodo(todo.id) }
+                        onClick={ () => {
+                            todoAppStore.dispatch({
+                                type: 'TOGGLE_TODO',
+                                id: todo.id
+                            })
+                        }}
                         style={{
                             textDecoration:
                                 todo.completed ? 
@@ -46,23 +55,8 @@ const app = document.getElementById('root');
 const render = () => {
     ReactDom.render(
         <div>
-            <Counter 
-                count={ counterStore.getState() }
-                increment={ () => { counterStore.dispatch({type: 'INCREMENT'}); } }
-                decrement={ () => { counterStore.dispatch({type: 'DECREMENT'}); } }
-            />
-            <TodoApp 
-                addTodo={ text => todoAppStore.dispatch({
-                    type: 'ADD_TODO',
-                    text,
-                    id: nextTodoId++
-                })}
-                todos={ todoAppStore.getState().todos }
-                toggleTodo={ id => todoAppStore.dispatch({
-                    type: 'TOGGLE_TODO',
-                    id
-                })}
-            />
+            <Counter count={ counterStore.getState() } />
+            <TodoApp todos={ todoAppStore.getState().todos } />
         </div>,
         app
     );
