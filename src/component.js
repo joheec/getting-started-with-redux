@@ -64,60 +64,67 @@ const TodoList = ({ onTodoClick, todos }) => (
     </ul>
 );
 
+const AddTodo = ({onAddTodo}) => {
+    let input;
+    return <div>
+        <input ref={ node => { input = node; }}/>
+        <button onClick={ () => { 
+            onAddTodo(input.value);
+            input.value = '';
+        }}>
+            Add Todo
+        </button>
+    </div>
+};
+
+const Filters = ({visibilityFilter}) => (
+    <p>
+        Show: {' '}
+        <FilterLink 
+            filter={'SHOW_ALL'}
+            currentFilter={visibilityFilter}
+        >
+            All
+        </FilterLink>
+        {' '}
+        <FilterLink 
+            filter={'SHOW_ACTIVE'}
+            currentFilter={visibilityFilter}
+        >
+            Active
+        </FilterLink>
+        {' '}
+        <FilterLink 
+            filter={'SHOW_COMPLETED'}
+            currentFilter={visibilityFilter}
+        >
+            Completed
+        </FilterLink>
+    </p>
+);
+
 let nextTodoId = -1;
-class TodoApp extends Component {
-    render() {
-        const { todos, visibilityFilter } = this.props;
-        const visibleTodos = getVisibleTodos(todos, visibilityFilter);
-        return (
-            <div>
-                <input ref={ node => { this.input = node; }}/>
-                <button onClick={ () => { 
-                    todoAppStore.dispatch({
-                        type: 'ADD_TODO',
-                        text: this.input.value,
-                        id: nextTodoId++
-                    })
-                    this.input.value = '';
-                }}>
-                    Add Todo
-                </button>
-                <p>
-                    Show: {' '}
-                    <FilterLink 
-                        filter={'SHOW_ALL'}
-                        currentFilter={visibilityFilter}
-                    >
-                        All
-                    </FilterLink>
-                    {' '}
-                    <FilterLink 
-                        filter={'SHOW_ACTIVE'}
-                        currentFilter={visibilityFilter}
-                    >
-                        Active
-                    </FilterLink>
-                    {' '}
-                    <FilterLink 
-                        filter={'SHOW_COMPLETED'}
-                        currentFilter={visibilityFilter}
-                    >
-                        Completed
-                    </FilterLink>
-                </p>
-                <TodoList 
-                    todos={visibleTodos} 
-                    onTodoClick= { id => {
-                        todoAppStore.dispatch({
-                            type: 'TOGGLE_TODO',
-                            id
-                        });
-                    }}
-                />
-            </div>
-        );
-    }
-}
+const TodoApp = ({todos, visibilityFilter}) => (
+    <div>
+        <AddTodo onAddTodo={input => {
+            todoAppStore.dispatch({
+                type: 'ADD_TODO',
+                text: input,
+                id: nextTodoId++
+            });
+        }}/>
+        <Filters visibilityFilter={visibilityFilter} />
+        <TodoList 
+            todos={getVisibleTodos(todos, visibilityFilter)} 
+            onTodoClick= { id => {
+                todoAppStore.dispatch({
+                    type: 'TOGGLE_TODO',
+                    id
+                });
+            }}
+        />
+    </div>
+);
 
 const app = document.getElementById('root');
 
